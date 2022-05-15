@@ -4,6 +4,7 @@ import requests
 import json
 import os
 import glob
+from os.path import exists
 
 EXTENSION_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 THUMBNAILS_DIR = EXTENSION_DIR + '/thumbnails/'
@@ -80,10 +81,13 @@ def downloadCover(url, id):
         os.makedirs(THUMBNAILS_DIR)
 
     iconPath = THUMBNAILS_DIR + str(id)
-    r = requests.get(url)
 
-    with open(iconPath,'wb') as output_file:
-        output_file.write(r.content)
+    if(not exists(iconPath)):
+        r = requests.get(url)
+
+        with open(iconPath,'wb') as output_file:
+            output_file.write(r.content)
+
     return iconPath
 
 def clear_thumbnails():
