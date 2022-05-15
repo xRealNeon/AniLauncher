@@ -2,14 +2,14 @@ from ulauncher.api.client.Extension import Extension
 from ulauncher.api.client.EventListener import EventListener
 from ulauncher.api.shared.event import KeywordQueryEvent, ItemEnterEvent
 from ulauncher.api.shared.action.RenderResultListAction import RenderResultListAction
-import anilist
+import src.anilist as anilist
 
 class AniLauncherExtension(Extension):
 
     def __init__(self):
         super().__init__()
+        anilist.clear_thumbnails()
         self.subscribe(KeywordQueryEvent, KeywordQueryEventListener())
-
 
 class KeywordQueryEventListener(EventListener):
 

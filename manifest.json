@@ -24,6 +24,14 @@
         "options": ["romaji", "english", "native"]
       },
       {
+        "id": "cover_enabled",
+        "type": "select",
+        "name": "Show covers",
+        "description": "Reduces speed",
+        "default_value": "true",
+        "options": [true, false]
+      },
+      {
         "id": "anime_enabled",
         "type": "select",
         "name": "Search anime",

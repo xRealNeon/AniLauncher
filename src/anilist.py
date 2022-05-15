@@ -2,12 +2,21 @@ from ulauncher.api.shared.item.ExtensionResultItem import ExtensionResultItem
 from ulauncher.api.shared.action.OpenUrlAction import OpenUrlAction
 import requests
 import json
+import os
+import glob
+
+EXTENSION_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+THUMBNAILS_DIR = EXTENSION_DIR + '/thumbnails/'
 
 def search(searchKeyword, preferences):
     query = '''
         query ($search: String, $mediaType: MediaType, $isAdult: Boolean) {
         media: Page(perPage: 8) {
             results: media(type: $mediaType, isAdult: $isAdult, search: $search) {
+            id
+            coverImage {
+                medium
+            }
             siteUrl
             title {
                 romaji,
@@ -51,8 +60,12 @@ def search(searchKeyword, preferences):
         # Fallback if title is not available
         if name == None:
             name = media['title']['romaji']
+            
+        iconPath = 'images/icon.png'    
+        if(str2bool(preferences['cover_enabled'])):
+            iconPath = downloadCover(media['coverImage']['medium'], media['id'])
 
-        items.append(ExtensionResultItem(icon='images/icon.png',
+        items.append(ExtensionResultItem(icon=iconPath,
                                         name=name,
                                         description=description,
                                         on_enter=OpenUrlAction(media['siteUrl'])))
@@ -61,3 +74,20 @@ def search(searchKeyword, preferences):
 
 def str2bool(str):
     return json.loads(str.lower())
+
+def downloadCover(url, id):
+    if not os.path.exists(THUMBNAILS_DIR):
+        os.makedirs(THUMBNAILS_DIR)
+
+    iconPath = THUMBNAILS_DIR + str(id)
+    r = requests.get(url)
+
+    with open(iconPath,'wb') as output_file:
+        output_file.write(r.content)
+    return iconPath
+
+def clear_thumbnails():
+    files = glob.glob(THUMBNAILS_DIR + '*')
+    
+    for f in files:
+        os.remove(f)
