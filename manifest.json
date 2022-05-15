@@ -1,0 +1,44 @@
+{
+    "required_api_version": "^2.0.0",
+    "name": "AniLauncher for AniList",
+    "description": "Search Anilist.co directly in Ulauncher",
+    "developer_name": "NeoCode",
+    "icon": "images/icon.png",
+    "options": {
+      "query_debounce": 0.5
+    },
+    "preferences": [
+      {
+        "id": "al_kw",
+        "type": "keyword",
+        "name": "AniLauncher",
+        "description": "Open keyword",
+        "default_value": "al"
+      },
+      {
+        "id": "title_format",
+        "type": "select",
+        "name": "Title format",
+        "description": "Your preferred title format",
+        "default_value": "english",
+        "options": ["romaji", "english", "native"]
+      },
+      {
+        "id": "anime_enabled",
+        "type": "select",
+        "name": "Search anime",
+        "description": "Search for anime",
+        "default_value": "true",
+        "options": [true, false]
+      },
+      {
+        "id": "manga_enabled",
+        "type": "select",
+        "name": "Search manga",
+        "description": "Search for manga",
+        "default_value": "true",
+        "options": [true, false]
+      }
+    ]
+  }
+  
