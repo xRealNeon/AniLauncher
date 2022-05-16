@@ -5,6 +5,7 @@ import json
 import os
 import glob
 from os.path import exists
+import urllib.parse
 
 EXTENSION_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 THUMBNAILS_DIR = EXTENSION_DIR + '/thumbnails/'
@@ -36,7 +37,7 @@ def search(searchKeyword, preferences):
 
     # Define our query variables and values that will be used in the query request
     variables = {
-        'search': searchKeyword
+        'search': searchKeyword,
     }
 
     if(str2bool(preferences['anime_enabled']) and not str2bool(preferences['manga_enabled'])):
@@ -44,6 +45,9 @@ def search(searchKeyword, preferences):
 
     if(str2bool(preferences['manga_enabled']) and not str2bool(preferences['anime_enabled'])):
         variables['mediaType'] = 'MANGA'
+
+    if(not str2bool(preferences['adult_enabled'])):
+        variables['isAdult'] = False
 
     url = 'https://graphql.anilist.co'
 
@@ -64,7 +68,7 @@ def search(searchKeyword, preferences):
             
         iconPath = 'images/icon.png'    
         if(str2bool(preferences['cover_enabled'])):
-            iconPath = downloadCover(media['coverImage']['medium'], media['id'])
+            iconPath = downloadCover(media['coverImage']['medium'], media['id'], str2bool(preferences['statically_enabled']))
 
         items.append(ExtensionResultItem(icon=iconPath,
                                         name=name,
@@ -76,14 +80,20 @@ def search(searchKeyword, preferences):
 def str2bool(str):
     return json.loads(str.lower())
 
-def downloadCover(url, id):
+def downloadCover(url, id, use_cdn):
     if not os.path.exists(THUMBNAILS_DIR):
         os.makedirs(THUMBNAILS_DIR)
 
     iconPath = THUMBNAILS_DIR + str(id)
 
     if(not exists(iconPath)):
-        r = requests.get(url)
+        parsed_url = urllib.parse.urlparse(url)
+        cdn_url = 'https://cdn.statically.io/img/{}/w=80,q=50{}'
+        cdn_url = cdn_url.format(parsed_url.netloc, parsed_url.path);
+        if(use_cdn):
+            r = requests.get(cdn_url)
+        else:
+            r = requests.get(url)
 
         with open(iconPath,'wb') as output_file:
             output_file.write(r.content)

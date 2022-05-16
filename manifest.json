@@ -32,6 +32,22 @@
         "options": [true, false]
       },
       {
+        "id": "statically_enabled",
+        "type": "select",
+        "name": "Use statically cdn",
+        "description": "Speeds up cover loading",
+        "default_value": "true",
+        "options": [true, false]
+      },
+      {
+        "id": "adult_enabled",
+        "type": "select",
+        "name": "Show adult content",
+        "description": "Show adult content",
+        "default_value": "false",
+        "options": [true, false]
+      },
+      {
         "id": "anime_enabled",
         "type": "select",
         "name": "Search anime",
